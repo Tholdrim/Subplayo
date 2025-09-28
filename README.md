@@ -1,5 +1,8 @@
 # YouTube Subscriptions
 
+[![GitHub Release](https://img.shields.io/github/v/release/Tholdrim/YouTube-Subscriptions?style=flat-square)](https://github.com/Tholdrim/YouTube-Subscriptions/releases/latest)
+[![GitHub License](https://img.shields.io/github/license/Tholdrim/YouTube-Subscriptions?style=flat-square)](LICENSE.txt)
+
 This script monitors selected YouTube channels and automatically adds new videos to your playlists.
 It is built with Google Apps Script and the YouTube Data API v3.
 
@@ -14,63 +17,71 @@ It is built with Google Apps Script and the YouTube Data API v3.
 
 ## Setup
 
-1. **Create a Google Apps Script project**
+### Getting started
 
-   - Open [Google Apps Script](https://script.google.com/) and create a new project.
-   - For each file in the [Source](Source) directory, create a matching file in the Apps Script editor (using the **+** button in the left panel) and copy its contents.
+Let’s start with the basics — setting everything up so the script can do its job.
 
-2. **Enable the YouTube Data API v3**
+#### 1. Create a Google Apps Script project
 
-   - In the **Services** menu (on the left panel), add **YouTube Data API v3**.
+- Open [Google Apps Script](https://script.google.com/) and create a new project.
+- For each file in the [Source](Source) directory, create a matching file in the Apps Script editor (using the **+** button in the left panel) and copy its contents.
 
-3. **List all your playlists and subscriptions**
+#### 2. Enable the YouTube Data API v3
 
-   - In the Apps Script editor, select the `listMyPlaylists` function and click **Run**.
-   - Authorize the script if it’s your first time running it.
-   - In the **Execution log** panel, you will see a list of all your playlists along with their IDs. Write them down.
-   - Repeat the steps with the `listMySubscriptions` function.
+- In the **Services** menu (on the left panel), add **YouTube Data API v3**.
+
+#### 3. List all your playlists and subscriptions
 
 > [!IMPORTANT]
 > Make sure the `Main.gs` file is selected in the left panel when running these functions.  
 > Otherwise, they might not appear in the function dropdown menu.
 
-4. **Configure settings**
+- In the Apps Script editor, select the `listMyPlaylists` function and click **Run**.
+- Authorize the script if it’s your first time running it.
+- In the **Execution log** panel, you will see a list of all your playlists along with their IDs. Write them down.
+- Repeat the steps with the `listMySubscriptions` function.
 
-   - Open the `Settings.gs` file on the left and replace the placeholders (`PLAYLIST_1_ID`, `CHANNEL_1_1_ID`, etc.) with the identifiers noted in the previous step.
-   - At the end, the file should look similar to this:
+#### 4. Configure settings
 
-     ```javascript
-     const settings = {
-       playlists: {
-         "PLrEoTTPGndRYOD03tciWWVZ5hhpDsKVYW": [ // IT
-           "UCpIn7ox7j7bH_OFj7tYouOQ",           // John Savill's Technical Training
-         ],
-         "PLrEoTTPGndRblAh27ns3MOHZldAilErI6": [ // Science
-           "UCsXVk37bltHxD1rDPwtNM8Q",           // Kurzgesagt – In a Nutshell
-           "UCHnyfMqiRRG1u-2MsSQLbXA",           // Veritasium
-         ],
-       }
-     };
-     ```
+- Open the `Settings.gs` file on the left and replace the placeholders (`PLAYLIST_1_ID`, `CHANNEL_1_1_ID`, etc.) with the identifiers noted in the previous step.
+- At the end, the file should look similar to this:
 
-5. **Run manually for the first time**
+  ```javascript
+  const settings = {
+    playlists: {
+      "PLrEoTTPGndRYOD03tciWWVZ5hhpDsKVYW": [ // IT
+        "UCpIn7ox7j7bH_OFj7tYouOQ",           // John Savill's Technical Training
+      ],
+      "PLrEoTTPGndRblAh27ns3MOHZldAilErI6": [ // Science
+        "UCsXVk37bltHxD1rDPwtNM8Q",           // Kurzgesagt – In a Nutshell
+        "UCHnyfMqiRRG1u-2MsSQLbXA",           // Veritasium
+      ],
+    }
+  };
+  ```
 
-   - In the Apps Script editor, select the `addNewVideosToPlaylists` function and click **Run**.
-   - If everything is set up correctly, you should see in the **Execution log** that all specified channels were detected as new and the last video from each was added to the corresponding playlist.
-   - If you run it again, no additional videos should be added (unless new ones have been published since).
+#### 5. Run manually for the first time
 
-6. **Optional: set up a time-driven trigger**
+- In the Apps Script editor, select the `addNewVideosToPlaylists` function and click **Run**.
+- If everything is set up correctly, you should see in the **Execution log** that all specified channels were detected as new and the last video from each was added to the corresponding playlist.
+- If you run it again, no additional videos should be added (unless new ones have been published since).
 
-   - Go to **Triggers** (alarm clock icon on the left).
-   - Click **Add Trigger** in the bottom-right corner.
-   - Select the function: `addNewVideosToPlaylists`.
-   - Choose the trigger type: **Time-driven → Hour timer**.
-   - Select frequency: e.g., **Every hour**.
-   - Click **Save**.
+### Fine-tuning
+
+Once the basics are in place, you can take it a step further by adding automation.
+
+#### Set up a time-driven trigger
 
 > [!TIP]
 > Running the script on an hourly schedule is recommended.  
 > This schedule should not exceed the daily YouTube Data API quota, while still keeping your playlists updated quickly.
+
+- Go to **Triggers** (alarm clock icon on the left).
+- Click **Add Trigger** in the bottom-right corner.
+- Select the function: `addNewVideosToPlaylists`.
+- Choose the trigger type: **Time-driven → Hour timer**.
+- Select frequency: e.g., **Every hour**.
+- Click **Save**.
 
 ## License
 
