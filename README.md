@@ -1,4 +1,4 @@
-# YouTube Subscriptions
+# Subplayo
 
 [![GitHub Release](https://img.shields.io/github/v/release/Tholdrim/YouTube-Subscriptions?style=flat-square)](https://github.com/Tholdrim/YouTube-Subscriptions/releases/latest)
 [![GitHub License](https://img.shields.io/github/license/Tholdrim/YouTube-Subscriptions?style=flat-square)](LICENSE.txt)
@@ -11,6 +11,7 @@ It is built with Google Apps Script and the YouTube Data API v3.
 - Detects and adds the latest videos from your favorite channels to playlists.
 - Avoids duplicates by keeping track of the last added videos.
 - Supports optional automation with time-driven triggers.
+- Runs entirely within Google, no external servers involved — your privacy is protected.
 - Lists all your playlists and subscriptions to simplify the initial setup.
 - Provides clear, detailed logs for every execution.
 - Free and open source. :sunglasses:
@@ -33,8 +34,7 @@ Let’s start with the basics — setting everything up so the script can do its
 #### 3. List all your playlists and subscriptions
 
 > [!IMPORTANT]
-> Make sure the `Main.gs` file is selected in the left panel when running these functions.  
-> Otherwise, they might not appear in the function dropdown menu.
+> Make sure the `Main.gs` file is selected in the left panel when running these functions. Otherwise, they might not appear in the function dropdown menu.
 
 - In the Apps Script editor, select the `listMyPlaylists` function and click **Run**.
 - Authorize the script if it’s your first time running it.
@@ -73,8 +73,7 @@ Once the basics are in place, you can take it a step further by adding automatio
 #### Set up a time-driven trigger
 
 > [!TIP]
-> Running the script on an hourly schedule is recommended.  
-> This schedule should not exceed the daily YouTube Data API quota, while still keeping your playlists updated quickly.
+> Running the script on an hourly schedule is recommended. This schedule should not exceed the daily YouTube Data API quota, while still keeping your playlists updated quickly.
 
 - Go to **Triggers** (alarm clock icon on the left).
 - Click **Add Trigger** in the bottom-right corner.
@@ -82,6 +81,15 @@ Once the basics are in place, you can take it a step further by adding automatio
 - Choose the trigger type: **Time-driven → Hour timer**.
 - Select frequency: e.g., **Every hour**.
 - Click **Save**.
+
+#### Using Brand Accounts
+
+YouTube Brand Accounts cannot be directly authenticated in Google Apps Script. To work around this limitation, you can share playlists between them and your main Google account:
+
+- In your Brand Account, create the playlist you want to use.
+- Open the playlist settings and share it with edit permissions to your main Google account.
+- Copy the playlist ID and configure it in `Settings.gs` just like any other playlist.
+- When the script runs, videos will be added via your main account, but into a playlist that belongs to the Brand Account.
 
 ## License
 
