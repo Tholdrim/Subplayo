@@ -85,7 +85,7 @@ If everything is configured correctly:
 
 Once the basics are in place, you can refine your setup further with additional options.
 
-#### Set up a time-driven trigger
+### Set up a time-driven trigger
 
 > [!TIP]
 > Running the script on an hourly schedule is recommended. This schedule should not exceed the daily YouTube Data API quota, while still keeping your playlists updated quickly.
@@ -96,6 +96,15 @@ Once the basics are in place, you can refine your setup further with additional 
 - Choose the trigger type: **Time-driven → Hour timer**.
 - Select frequency: e.g., **Every hour**.
 - Click **Save**.
+
+### Using Brand Accounts
+
+YouTube Brand Accounts cannot be authenticated directly in Google Apps Script. To work around this limitation, you can share playlists between the Brand Account and your main Google account:
+
+- Create the desired playlist in your Brand Account.
+- Open the playlist settings and share it with your main Google account, granting edit permissions.
+- Copy the playlist ID and paste it into `Settings.gs` the same way you would with any other playlist.
+- When the script runs, videos will be added via your main account to a playlist that belongs to the Brand Account.
 
 ## ⚖️ License
 
