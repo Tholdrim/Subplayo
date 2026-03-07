@@ -27,14 +27,15 @@ const youTubeClient = (() => {
   }
 
   function getLatestVideosByPlaylistId(playlistId) {
-    const response = YouTube.PlaylistItems.list("snippet", {
+    const response = YouTube.PlaylistItems.list("contentDetails,snippet", {
       playlistId: playlistId,
       maxResults: MAX_BATCH
     });
 
     return response.items.map(item => ({
       id: item.snippet.resourceId.videoId,
-      title: item.snippet.title
+      title: item.snippet.title,
+      publishedAt: item.contentDetails.videoPublishedAt
     }));
   }
 

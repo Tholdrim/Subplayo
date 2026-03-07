@@ -19,52 +19,18 @@ const playlistUpdater = (() => {
     }
   }
 
-  function _addVideo(playlistId, video) {
-    const { error } = _safeExecute(() => youTubeClient.addVideoToPlaylist(video.id, playlistId));
+  function _fetchPlaylists(playlistIds) {
+    logger.logPlaylistsFetching();
+
+    const { result: playlists, error } = _safeExecute(() => youTubeClient.getPlaylistsByIds(playlistIds));
 
     if (error) {
-      logger.logVideoAdditionFailure(video.title, error.details.message);
+      logger.logPlaylistsFetchFailure(error.details.message);
 
-      return;
+      throw error;
     }
 
-    logger.logVideoAddition(video.title);
-  }
-
-  function _checkChannel(playlistId, channelId, channel) {
-    const { result: latestVideos, error } = _safeExecute(() => youTubeClient.getLatestVideosByPlaylistId(channel.uploadsPlaylistId));
-
-    if (error || latestVideos.length === 0) {
-        logger.logChannelSkipping(channel.title, ChannelSkipReason.NO_VIDEOS);
-
-        return;
-    }
-
-    logger.logChannelChecking(channel.title);
-
-    const scriptProperties = PropertiesService.getScriptProperties();
-    let lastAddedVideoId = scriptProperties.getProperty(channelId);
-
-    if (!lastAddedVideoId) {
-      logger.logNewChannelDiscovery();
-
-      if (latestVideos.length > 1) {
-        lastAddedVideoId = latestVideos[1].id;
-      }
-    }
-
-    const index = latestVideos.findIndex(video => video.id === lastAddedVideoId);
-    const newVideos = index === -1 ? latestVideos : latestVideos.slice(0, index);
-
-    logger.logNewVideosFinding(newVideos.length);
-
-    for (const video of newVideos.slice().reverse()) {
-      _addVideo(playlistId, video);
-    }
-
-    if (newVideos.length > 0) {
-      scriptProperties.setProperty(channelId, newVideos[0].id);
-    }
+    return playlists;
   }
 
   function _fetchChannels(channelIds) {
@@ -81,20 +47,6 @@ const playlistUpdater = (() => {
     return channels;
   }
 
-  function _fetchPlaylists(playlistIds) {
-    logger.logPlaylistsFetching();
-
-    const { result: playlists, error } = _safeExecute(() => youTubeClient.getPlaylistsByIds(playlistIds));
-
-    if (error) {
-      logger.logPlaylistsFetchFailure(error.details.message);
-
-      throw error;
-    }
-
-    return playlists;
-  }
-
   function _processPlaylist(playlistId, playlistTitle, fetchedChannels) {
     logger.logPlaylistProcessing(playlistTitle);
 
@@ -109,6 +61,54 @@ const playlistUpdater = (() => {
 
       _checkChannel(playlistId, channelId, channel);
     }
+  }
+
+  function _checkChannel(playlistId, channelId, channel) {
+    const { result: latestVideos, error } = _safeExecute(() => youTubeClient.getLatestVideosByPlaylistId(channel.uploadsPlaylistId));
+
+    if (error || latestVideos.length === 0) {
+      logger.logChannelSkipping(channel.title, ChannelSkipReason.NO_VIDEOS);
+
+      return;
+    }
+
+    logger.logChannelChecking(channel.title);
+
+    const scriptProperties = PropertiesService.getScriptProperties();
+    const lastStoredValue = scriptProperties.getProperty(channelId);
+
+    let parsedTimestamp = Date.parse(lastStoredValue);
+
+    if (isNaN(parsedTimestamp)) {
+      logger.logNewChannelDiscovery();
+
+      parsedTimestamp = latestVideos.length > 1 ? Date.parse(latestVideos[1].publishedAt) : null;
+    }
+
+    const index = latestVideos.findIndex(video => Date.parse(video.publishedAt) <= parsedTimestamp);
+    const newVideos = index === -1 ? latestVideos : latestVideos.slice(0, index);
+
+    logger.logNewVideosFinding(newVideos.length);
+
+    for (const video of newVideos.slice().reverse()) {
+      _addVideo(playlistId, video);
+    }
+
+    if (newVideos.length > 0) {
+      scriptProperties.setProperty(channelId, newVideos[0].publishedAt);
+    }
+  }
+
+  function _addVideo(playlistId, video) {
+    const { error } = _safeExecute(() => youTubeClient.addVideoToPlaylist(video.id, playlistId));
+
+    if (error) {
+      logger.logVideoAdditionFailure(video.title, error.details.message);
+
+      return;
+    }
+
+    logger.logVideoAddition(video.title);
   }
 
   function _safeExecute(operation) {
