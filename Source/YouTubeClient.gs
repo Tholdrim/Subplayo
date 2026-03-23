@@ -32,7 +32,7 @@ const youTubeClient = (() => {
       maxResults: MAX_BATCH
     });
 
-    return response.items.map(item => ({
+    return (response.items ?? []).map(item => ({
       id: item.snippet.resourceId.videoId,
       title: item.snippet.title,
       publishedAt: item.contentDetails.videoPublishedAt
@@ -74,7 +74,7 @@ const youTubeClient = (() => {
         maxResults: MAX_BATCH
       });
 
-      response.items.forEach(item => {
+      (response.items ?? []).forEach(item => {
         const { id, value } = transformOperation(item);
         result[id] = value;
       });
@@ -94,7 +94,7 @@ const youTubeClient = (() => {
         pageToken: nextPageToken
       });
 
-      result = result.concat(response.items);
+      result = result.concat(response.items ?? []);
       nextPageToken = response.nextPageToken;
     } while (nextPageToken);
 

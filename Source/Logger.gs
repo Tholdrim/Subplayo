@@ -4,6 +4,10 @@ const ChannelSkipReason = Object.freeze({
   NO_VIDEOS: "Channel has no videos"
 });
 
+const PlaylistSkipReason = Object.freeze({
+  NOT_FOUND: "Playlist not found on server"
+});
+
 const logger = (() => {
   const PLAYLIST_ID_DISPLAY_WIDTH = 34;
 
@@ -29,9 +33,9 @@ const logger = (() => {
     console.info(`→ Processing playlist: ${playlistTitle}`);
   }
 
-  function logPlaylistSkipping(playlistId) {
+  function logPlaylistSkipping(playlistId, reason) {
     console.warn(`→ Skipping playlist: ${playlistId}`);
-    console.warn(`  → Reason: Playlist not found on server`);
+    console.warn(`  → Reason: ${reason}`);
   }
 
   function logChannelChecking(channelTitle) {

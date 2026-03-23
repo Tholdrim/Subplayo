@@ -1,4 +1,6 @@
 function addNewVideosToPlaylists() {
+  const playlistUpdater = createPlaylistUpdater(settings, youTubeClient, logger);
+
   playlistUpdater.run();
 }
 

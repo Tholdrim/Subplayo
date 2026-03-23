@@ -1,21 +1,29 @@
-const playlistUpdater = (() => {
+const createPlaylistUpdater = (settings, youTubeClient, logger) => {
   function run() {
     const playlistIds = Object.keys(settings.playlists);
     const fetchedPlaylists = _fetchPlaylists(playlistIds);
 
-    const channelIds = Object.values(settings.playlists).flat();
+    const channelIds = [...new Set(Object.values(settings.playlists).flat())];
     const fetchedChannels = _fetchChannels(channelIds);
+
+    const scriptProperties = PropertiesService.getScriptProperties();
+    const storedTimestamps = scriptProperties.getProperties();
+    const updatedTimestamps = {};
 
     for (const playlistId of playlistIds) {
       const playlistTitle = fetchedPlaylists[playlistId];
 
       if (!playlistTitle) {
-        logger.logPlaylistSkipping(playlistId);
+        logger.logPlaylistSkipping(playlistId, PlaylistSkipReason.NOT_FOUND);
 
         continue;
       }
 
-      _processPlaylist(playlistId, playlistTitle, fetchedChannels);
+      _processPlaylist(playlistId, playlistTitle, fetchedChannels, storedTimestamps, updatedTimestamps);
+    }
+
+    if (Object.keys(updatedTimestamps).length > 0) {
+      scriptProperties.setProperties(updatedTimestamps);
     }
   }
 
@@ -47,7 +55,7 @@ const playlistUpdater = (() => {
     return channels;
   }
 
-  function _processPlaylist(playlistId, playlistTitle, fetchedChannels) {
+  function _processPlaylist(playlistId, playlistTitle, fetchedChannels, storedTimestamps, updatedTimestamps) {
     logger.logPlaylistProcessing(playlistTitle);
 
     for (const channelId of settings.playlists[playlistId]) {
@@ -59,11 +67,11 @@ const playlistUpdater = (() => {
         continue;
       }
 
-      _checkChannel(playlistId, channelId, channel);
+      _checkChannel(playlistId, channelId, channel, storedTimestamps, updatedTimestamps);
     }
   }
 
-  function _checkChannel(playlistId, channelId, channel) {
+  function _checkChannel(playlistId, channelId, channel, storedTimestamps, updatedTimestamps) {
     const { result: latestVideos, error } = _safeExecute(() => youTubeClient.getLatestVideosByPlaylistId(channel.uploadsPlaylistId));
 
     if (error || latestVideos.length === 0) {
@@ -74,29 +82,36 @@ const playlistUpdater = (() => {
 
     logger.logChannelChecking(channel.title);
 
-    const scriptProperties = PropertiesService.getScriptProperties();
-    const lastStoredValue = scriptProperties.getProperty(channelId);
-
-    let parsedTimestamp = Date.parse(lastStoredValue);
-
-    if (isNaN(parsedTimestamp)) {
-      logger.logNewChannelDiscovery();
-
-      parsedTimestamp = latestVideos.length > 1 ? Date.parse(latestVideos[1].publishedAt) : null;
-    }
-
-    const index = latestVideos.findIndex(video => Date.parse(video.publishedAt) <= parsedTimestamp);
-    const newVideos = index === -1 ? latestVideos : latestVideos.slice(0, index);
+    const timestamp = _resolveTimestamp(channelId, latestVideos, storedTimestamps);
+    const newVideos = _filterNewVideos(latestVideos, timestamp);
 
     logger.logNewVideosFinding(newVideos.length);
 
-    for (const video of newVideos.slice().reverse()) {
+    for (const video of [...newVideos].reverse()) {
       _addVideo(playlistId, video);
     }
 
     if (newVideos.length > 0) {
-      scriptProperties.setProperty(channelId, newVideos[0].publishedAt);
+      updatedTimestamps[channelId] = newVideos[0].publishedAt;
     }
+  }
+
+  function _resolveTimestamp(channelId, latestVideos, storedTimestamps) {
+    const parsed = Date.parse(storedTimestamps[channelId]);
+
+    if (!isNaN(parsed)) {
+      return parsed;
+    }
+
+    logger.logNewChannelDiscovery();
+
+    return latestVideos.length > 1 ? Date.parse(latestVideos[1].publishedAt) : Number.NEGATIVE_INFINITY;
+  }
+
+  function _filterNewVideos(latestVideos, timestamp) {
+    const index = latestVideos.findIndex(video => Date.parse(video.publishedAt) <= timestamp);
+
+    return index === -1 ? latestVideos : latestVideos.slice(0, index);
   }
 
   function _addVideo(playlistId, video) {
@@ -122,4 +137,4 @@ const playlistUpdater = (() => {
   return {
     run
   };
-})();
+};
