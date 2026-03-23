@@ -17,6 +17,9 @@ Subplayo monitors selected channels and automatically adds new videos to playlis
 
 ## 🚀 Getting started
 
+> [!NOTE]
+> Several users have reached out to share that the current setup process is overly complex and difficult to follow. This feedback has been genuinely appreciated and has inspired a significant redesign of the onboarding experience. A concrete plan is already in place. However, implementation will require some additional time due to personal commitments. The next release is intended to be the one that introduces a greatly simplified setup process.
+
 Follow the steps below to configure Subplayo inside your Google account.
 
 ### 1. Create a Google Apps Script project
