@@ -50,10 +50,12 @@ const youTubeClient = (() => {
   function listUserPlaylists() {
     const items = _fetchPaginatedData(YouTube.Playlists.list, "snippet", { mine: true });
 
-    return items.map(item => ({
-      id: item.id,
-      title: item.snippet.title
-    }));
+    return items
+      .filter(item => !item.id.startsWith('FL'))
+      .map(item => ({
+        id: item.id,
+        title: item.snippet.title
+      }));
   }
 
   function listUserSubscriptions() {
