@@ -1,20 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<svg width="475" height="100" viewBox="0 0 475 100" xmlns="http://www.w3.org/2000/svg">
-  <defs>
-    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="rgb(60, 110, 215)"/>
-      <stop offset="100%" stop-color="rgb(40, 165, 200)"/>
-    </linearGradient>
-  </defs>
-  <text x="50%" y="50%"
-        font-family="Inter, sans-serif"
-        font-size="80px"
-        font-style="italic"
-        font-weight="900"
-        letter-spacing="2px"
-        dominant-baseline="central"
-        text-anchor="middle"
-        fill="url(#textGradient)">
-    SUBPLAYO
-  </text>
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="155" viewBox="0 0 600 155">
+  <rect width="600" height="155" rx="20" fill="#282828" />
+  <text x="26.5" y="114.5" font-family="Inter, sans-serif" font-size="104" font-weight="900" letter-spacing="-3" fill="#FFFFFF">SUBPLAYO</text>
+  <rect x="26.5" y="125.5" width="204.797" height="7" fill="#FF5A64" />
 </svg>
