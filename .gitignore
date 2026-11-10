@@ -1,2 +1,4 @@
 # Directories
 .vs/
+dist/
+node_modules

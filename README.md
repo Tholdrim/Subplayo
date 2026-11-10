@@ -1,5 +1,5 @@
 <div align="center">
-    <img src="Assets/Logo.png" alt="Subplayo logo" />
+    <img src="assets/logo.png" alt="Subplayo logo" />
     <br />
     <a href="https://github.com/Tholdrim/Subplayo/releases/latest"><img src="https://img.shields.io/github/v/release/Tholdrim/Subplayo?style=flat-square&label=Release" alt="Latest release" /></a>
     <a href="https://github.com/Tholdrim/Subplayo/stargazers"><img src="https://img.shields.io/github/stars/Tholdrim/Subplayo?style=flat-square&label=Stars" alt="GitHub stars count" /></a>
