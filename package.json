@@ -7,14 +7,16 @@
     "build": "npm run clean && rollup -c rollup.config.mjs",
     "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
     "check": "biome check .",
-    "check:write": "biome check --write ."
+    "check:write": "biome check --write .",
+    "test": "tsc -p test/tsconfig.json && vitest run"
   },
   "devDependencies": {
     "@biomejs/biome": "~2.6.6",
     "@types/google-apps-script": "~2.0.15",
     "rollup": "~4.68.2",
     "rollup-plugin-typescript2": "~0.37.0",
-    "typescript": "~6.0.3"
+    "typescript": "~6.0.3",
+    "vitest": "~4.1.12"
   },
   "engines": {
     "node": ">=22"

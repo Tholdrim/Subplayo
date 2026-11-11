@@ -4,7 +4,7 @@
     "target": "es2020",
     "module": "es2020",
     "moduleResolution": "bundler",
-    "lib": [ "es2020" ],
+    "lib": [ "es2020", "es2024.collection" ],
     "types": [ "google-apps-script" ],
     "strict": true,
     "allowUnreachableCode": false,

@@ -14,7 +14,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": ["src/**", "rollup.config.mjs"]
+    "includes": ["src/**/*.ts", "test/**/*.ts", "rollup.config.mjs"]
   },
   "formatter": {
     "enabled": true,
