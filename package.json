@@ -4,8 +4,8 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "npm run clean && rollup -c rollup.config.mjs",
-    "clean": "node -e \"require('node:fs').rmSync('dist', { recursive: true, force: true })\"",
+    "build": "npm run clean && rollup -c rollup.config.mjs && shx cp src/appsscript.json dist/appsscript.json",
+    "clean": "shx rm -rf dist",
     "check": "biome check .",
     "check:write": "biome check --write .",
     "test": "tsc -p test/tsconfig.json && vitest run"
@@ -15,6 +15,7 @@
     "@types/google-apps-script": "~2.0.15",
     "rollup": "~4.68.2",
     "rollup-plugin-typescript2": "~0.37.0",
+    "shx": "~0.4.0",
     "typescript": "~6.0.3",
     "vitest": "~4.1.12"
   },
